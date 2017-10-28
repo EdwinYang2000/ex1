@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1> title as following:</h1>
+
+{% for i in file_list %}
+<p> <a href='/files/<{{ i.id }}>'> {{ i.title }} </a></p>
+{% endfor %}
+
+</body>
+</html>
