@@ -7,22 +7,23 @@ from flask import render_template, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 from datetime import datetime
-
+from pymongo import MongoClient
 
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-
-
 pymysql.install_as_MySQLdb()
+client = MongoClient('127.0.0.1',27017)
+mongo_db = client.shiyanlou
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/test2'
 db = SQLAlchemy(app)
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 
 class File(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -42,6 +43,42 @@ class File(db.Model):
 
     def __repr__(self):
         return '<Article %r>' % self.title
+
+
+    def add_tag(self, tag_name):
+        file_item = mongo_db.file.find_one({'file_id': self.id})
+        if file_item:
+            tags = file_item['tags']
+            print(tags)
+            if tag_name not in tags:
+                print(tag_name)
+                tags.append(tag_name)
+            mongo_db.files.update_one({'file_id': self.id}, {'$set': {'tags': tags}})
+        else:
+            tags = [tag_name]
+            mongo_db.files.insert_one({'file_id': self.id, 'tags': tags})
+        return tags
+
+    def remove_tag(self, tag_name):
+        file_item = mongo_db.files.find_one({'file_id': self.id})
+        if file_item:
+            tags = file_item['tags']
+            try:
+                new_tags = tags.remove(tag_name)
+            except ValueError:
+                return tags
+            mongo_db.files.update_one({'file_id': self.id}, {'$set', {'tags': new_tags}})
+            return new_tags
+        return []
+
+    @property
+    def tags(self):
+        file_item = mongo_db.files.find_one({'file_id': self.id})
+        if file_item:
+            print(file_item)
+            return file_item['tags']
+        else:
+            return []
 
 class Category(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -63,8 +100,14 @@ db.session.add(python)
 db.session.add(file1)
 db.session.add(file2)
 db.session.commit()
+file1.add_tag('tech')
+file1.add_tag('java')
+file1.add_tag('linux')
+file2.add_tag('tech')
+file2.add_tag('python')
 
 db_output = File.query.all()
+
 
 @app.route('/')
 def index():

@@ -9,7 +9,10 @@
 <h1> title as following:</h1>
 
 {% for i in file_list %}
-<p> <a href='/files/<{{ i.id }}>'> {{ i.title }} </a></p>
+<p> <a href='/files/<{{ i.id }}>'> {{ i.title }} </a>
+    {% for tag in file_list.tags %}
+    <span>{{ tag }}</span>
+    {% endfor %}</p>
 {% endfor %}
 
 </body>
