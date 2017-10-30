@@ -1,7 +1,5 @@
 #!/usr/local/anaconda3/bin/python3
 
-import os
-import json
 from flask import Flask
 from flask import render_template, make_response, request
 from flask_sqlalchemy import SQLAlchemy
@@ -19,7 +17,7 @@ client = MongoClient('127.0.0.1',27017)
 mongo_db = client.shiyanlou
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/test2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/test3'
 db = SQLAlchemy(app)
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -49,31 +47,30 @@ class File(db.Model):
         file_item = mongo_db.file.find_one({'file_id': self.id})
         if file_item:
             tags = file_item['tags']
-            print(tags)
             if tag_name not in tags:
                 print(tag_name)
                 tags.append(tag_name)
-            mongo_db.files.update_one({'file_id': self.id}, {'$set': {'tags': tags}})
+            mongo_db.file.update_one({'file_id': self.id}, {'$set': {'tags': tags}})
         else:
             tags = [tag_name]
-            mongo_db.files.insert_one({'file_id': self.id, 'tags': tags})
+            mongo_db.file.insert_one({'file_id': self.id, 'tags': tags})
         return tags
 
     def remove_tag(self, tag_name):
-        file_item = mongo_db.files.find_one({'file_id': self.id})
+        file_item = mongo_db.file.find_one({'file_id': self.id})
         if file_item:
             tags = file_item['tags']
             try:
                 new_tags = tags.remove(tag_name)
             except ValueError:
                 return tags
-            mongo_db.files.update_one({'file_id': self.id}, {'$set', {'tags': new_tags}})
+            mongo_db.file.update_one({'file_id': self.id}, {'$set', {'tags': new_tags}})
             return new_tags
         return []
 
     @property
     def tags(self):
-        file_item = mongo_db.files.find_one({'file_id': self.id})
+        file_item = mongo_db.file.find_one({'file_id': self.id})
         if file_item:
             print(file_item)
             return file_item['tags']

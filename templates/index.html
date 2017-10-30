@@ -7,13 +7,16 @@
 <body>
 
 <h1> title as following:</h1>
-
+<ul>
 {% for i in file_list %}
-<p> <a href='/files/<{{ i.id }}>'> {{ i.title }} </a>
-    {% for tag in file_list.tags %}
+<li>
+    <a href='/files/<{{ i.id }}>'> {{ i.title }} </a>
+    {% for tag in i.tags %}
     <span>{{ tag }}</span>
-    {% endfor %}</p>
+    {% endfor %}
+</li>
 {% endfor %}
+</ul>
 
 </body>
 </html>
