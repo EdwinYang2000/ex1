@@ -9,13 +9,14 @@ class GithubshiyanlouSpider(scrapy.Spider):
     @property
     def start_urls(self):
         url_tmp = 'https://github.com/shiyanlou?tab=repositories&page={}'
-        return (url_tmp.format(i) for i in range(1, 4))
+        return (url_tmp.format(i) for i in range(1, 5))
+
 
     def parse(self, response):
-        for githubshiyanlou in response.css('div.position-relative'):
-            item = ShiyanlougithubItem ({
-                'name': response.css('div.mb-1 h3 a::text').re_first("\n\s*(.*)"),
-                'update_time': response.css('div.mt-2 relative-time::attr(datetime)').extract_first(),
-            })
+        for repository in response.css('li.public'):
+            item = ShiyanlougithubItem({
+
+            'name': repository.xpath('.//a[@itemprop="name codeRepository"]/text()').re_first("\n\s*(.*)"),
+            'update_time': repository.xpath('.//relative-time/@datetime').extract_first()})
 
             yield item

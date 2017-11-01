@@ -12,7 +12,7 @@ engine = create_engine('mysql+mysqldb://root@localhost:3306/shiyanlou?charset=ut
 Base = declarative_base()
 
 class Repository(Base):
-    __tablename__ = 'repositories1'
+    __tablename__ = 'repositories'
 
     id = Column(Integer,primary_key=True)
     name = Column(String(64))
