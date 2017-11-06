@@ -26,12 +26,7 @@ class GithubfollowSpider(scrapy.Spider):
     def parse_author(self,response):
 
             item = response.meta['item']
-            a = response.css('li a span.text-emphasized::text').re('\n\s*(.*)')[0]
-            b = response.css('li a span.text-emphasized::text').re('\n\s*(.*)')[2]
-            c = response.css('li span.text-emphasized::text').re('\n\s*(.*)')[4]
-
-            item['commits'] = a
-            item['branches'] = b
-            item['releases'] = c
-
+            item['commits'] = response.css('li a span.text-emphasized::text').re('\n\s*(.*)')[0]
+            item['branches'] = response.css('li a span.text-emphasized::text').re('\n\s*(.*)')[2]
+            item['releases'] = response.css('li span.text-emphasized::text').re('\n\s*(.*)')[4]
             yield item
