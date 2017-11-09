@@ -1,34 +1,16 @@
+# -*- coding:utf-8-
+
 import pandas as pd
-
-def quarter_volume():   
-
-    sumdata = []
-    data1 = []
-    data = pd.read_csv('apple.csv',header=0)
-    date1 = pd.to_datetime(data['Date'])
+from pandas import DataFrame
 
 
-    volume = data['Volume']
-    for i in volume:
-        data1.append(i)
-    data2 = pd.Series(data1,index=date1)
+def quarter_volume():
+    data = pd.read_csv('/usr/local/anaconda3/apple.csv', header=0)
+    i = pd.to_datetime(data['Date'])
+    data_ts = DataFrame(data=data.values, columns=data.columns, index=i)
+    data_ts = data_ts.drop(['Date', 'Open', 'High', 'Low', 'Close'], axis=1)
+    data_ts_3M = data_ts.resample('3M').sum()
+    second_volume_a = data_ts_3M.sort_values(by='Volume', ascending=False)
+    second_volume = second_volume_a.iloc[1]['Volume']
 
-
-    alldate = pd.date_range('2009-1-1','2016-12-31',freq=3*offsets.DateOffset(months=1))
-
-    for i in alldate:
-        if i=='2016-10-01':
-            s1 = data2.truncate(before='2016-10-01',after='2016-12-31').sum()
-            sumdata.append(s)
-        else:
-            s = data2.truncate(before=i,after=i+1).sum()
-            sumdata.append(s)
-
-    finaldata = pd.Series(sumdata,index=alldate)
-
-    second_volume= finaldata.sort_values()
-    second_volume = second_volume[-1]
     return second_volume
-
-
-print(quarter_volume())
