@@ -26,7 +26,11 @@ def create_app():
 
     app.config.from_envvar('RMON_SETTINGS',silent=True)
 
+<<<<<<< HEAD
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+=======
+    app.config('SQLALCHEMY_TRACK_MODIFICATIONS') = False
+>>>>>>> 173f57df2351035151f3c6b43477a1ab2dd55556
 
     app.register_blueprint(api)
 
@@ -34,6 +38,10 @@ def create_app():
 
     if app.debug:
         with app.app_context():
+<<<<<<< HEAD
             db.create_all()
+=======
+            db.createall()
+>>>>>>> 173f57df2351035151f3c6b43477a1ab2dd55556
         return app
 
