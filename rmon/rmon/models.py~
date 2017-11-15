@@ -21,8 +21,8 @@ class Server(db.Model):
     host = db.Column(db.String(15))
     port = db.Column(db.Integer, default=6379)
     password = db.Column(db.String())
-    updated_at = db.Column(db.Datetime, default=datetime.utcnow)
-    created_at = db.Column(db.Datetime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Server(name=%s)>' % self.name

@@ -34,6 +34,6 @@ def create_app():
 
     if app.debug:
         with app.app_context():
-            db.createall()
+            db.create_all()
         return app
 
